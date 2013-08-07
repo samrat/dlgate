@@ -6,7 +6,8 @@
                  [hiccup "1.0.3"]
                  [ring/ring-devel "1.1.8"]
                  [com.taoensso/carmine "2.1.2"]
-                 [copy-api "0.1.0-SNAPSHOT"]
+                 [copy-api "0.1.1-SNAPSHOT"]
+                 [sandbar/sandbar "0.4.0-SNAPSHOT"]
                  [compojure "1.1.5"]]
   :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]}}
   :main dlgate.web)
