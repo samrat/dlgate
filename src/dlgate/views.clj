@@ -3,11 +3,13 @@
             [copy-api.auth :as auth]
             [copy-api.client :as copy]
             [ring.util.response :as ring]
-            [sandbar.stateful-session :refer :all])
+            [sandbar.stateful-session :refer :all]
+            [taoensso.carmine :as car :refer (wcar)]
+            [taoensso.carmine.message-queue :as mq])
   (:load "copy_keys"))
 
 (def consumer (auth/make-consumer consumer-key
-                             consumer-secret))
+                                  consumer-secret))
 
 (defn index
   []
@@ -33,3 +35,12 @@
                                               request-token
                                               oauth-verifier))
     (ring/redirect "/")))
+
+(defn queue
+  [url]
+  (if-let [access-token (session-get :access-token)]
+    (do (car/wcar nil (mq/enqueue "dl-queue"
+                                  {:url url
+                                   :access-token access-token}))
+        "Done")
+    "You're not logged in!"))
