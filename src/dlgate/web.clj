@@ -13,7 +13,7 @@
   (GET "/login" [] (views/login))
   (GET "/auth" [oauth_token oauth_verifier] (views/auth oauth_token
                                                         oauth_verifier))
-  (GET "/q" [url] (views/queue url))
+  (POST "/q" [url] (views/queue url))
   (route/resources "/")
   (route/not-found "Not Found"))
 

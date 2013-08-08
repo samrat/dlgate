@@ -14,9 +14,8 @@
 (defn index
   []
   (if-let [access-token (session-get :access-token)]
-    (str "Hey, "
-         (:first_name (copy/account-info consumer access-token))
-         "!")
+    (layout/logged-in
+     (copy/account-info consumer access-token))
     (layout/index)))
 
 (defn login
@@ -42,5 +41,5 @@
     (do (car/wcar nil (mq/enqueue "dl-queue"
                                   {:url url
                                    :access-token access-token}))
-        "Done")
+        (ring/redirect "/"))
     "You're not logged in!"))
