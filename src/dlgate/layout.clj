@@ -17,10 +17,20 @@
      [:h1 "dlgate"]]
     body]))
 
+(defn alert-box
+  [alert-type message]
+  (html [:div {:class "row"}
+         [:div {:class "four columns"}]
+         [:div {:class "four columns"}
+          [:div {:class (str alert-type " alert")}
+           message]]]))
+
 (defn index
-  []
+  [& {:keys [alert]}]
   (common "dlgate"
           (html [:div {:clss "twelve colgrid"}
+                 (when-not (nil? alert)
+                   (alert-box "info" alert))
                  [:div {:class "row"}
                   [:div {:class "three columns"}]
                   [:div {:class "six columns"}
@@ -38,13 +48,13 @@
                            (Math/pow 1024 3)))))
 
 (defn logged-in
-  [account-info]
+  [account-info & {:keys [alert]}]
   (common "dlgate"
           (html [:div {:class "twelve colgrid"}
+                 (when-not (nil? alert)
+                   (alert-box "success" alert))
                  [:div {:class "row"}
                   [:div {:class "three columns"}]
-
-                  ;;[:div first-name]
                   [:form {:action "/q"
                           :method "post"
                           :class "append field six columns"}
@@ -67,5 +77,4 @@
                     ". "]
                    "You have "
                    (free-space account-info)
-                   " GB space left on your Copy folder."]
-                  ]])))
+                   " GB space left on your Copy folder."]]])))

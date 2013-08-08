@@ -15,8 +15,9 @@
   []
   (if-let [access-token (session-get :access-token)]
     (layout/logged-in
-     (copy/account-info consumer access-token))
-    (layout/index)))
+     (copy/account-info consumer access-token)
+     :alert (flash-get :alert))
+    (layout/index :alert (flash-get :alert))))
 
 (defn login
   []
@@ -41,5 +42,7 @@
     (do (car/wcar nil (mq/enqueue "dl-queue"
                                   {:url url
                                    :access-token access-token}))
+        (flash-put! :alert "Your download has been queued.")
         (ring/redirect "/"))
-    "You're not logged in!"))
+    (do (flash-put! :alert "You're not logged in!")
+        (ring/redirect "/"))))
