@@ -10,6 +10,8 @@
                  [sandbar/sandbar "0.4.0-SNAPSHOT"]
                  [clj-http "0.7.6"]
                  [me.raynes/fs "1.4.4"]
+                 [org.clojure/java.jdbc "0.3.0-alpha4"]
+                 [org.postgresql/postgresql "9.2-1003-jdbc4"]
                  [compojure "1.1.5"]]
   :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]}}
   :main dlgate.web)

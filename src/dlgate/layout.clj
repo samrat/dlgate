@@ -31,6 +31,12 @@
                    [:a {:href "https://copy.com?r=cPK0qZ"} " join Copy.com"]
                    "."]]] )))
 
+(defn free-space
+  [account-info]
+  (format "%.2f" (float (/ (- (get-in account-info [:storage :quota])
+                              (get-in account-info [:storage :used]))
+                           (Math/pow 1024 3)))))
+
 (defn logged-in
   [account-info]
   (common "dlgate"
@@ -60,9 +66,6 @@
                     (:last_name account-info)
                     ". "]
                    "You have "
-                   (format "%.2f" (float (/ (- (get-in account-info [:storage :quota])
-                                               (get-in account-info [:storage :used]))
-                                            (Math/pow 1024 3))))
-                   " GB space left on your Copy folder."
-                   ]
+                   (free-space account-info)
+                   " GB space left on your Copy folder."]
                   ]])))
