@@ -8,7 +8,12 @@
 
 (defn download-and-upload
   [access-token url]
-  (let [file-name (last (clojure.string/split url #"/"))
+  (let [headers (:headers (client/head url))
+        file-name (or (second
+                       (re-find #"filename=\"(\S+)\""
+                                (-> headers
+                                    (get "content-disposition" ""))))
+                      (last (clojure.string/split url #"/")))
         id (:id (copy/account-info consumer access-token))
         local-path (format "/tmp/%s/%s" id file-name)]
     (insert-download id url "PENDING")
@@ -21,10 +26,10 @@
                                :local-path local-path)
              (delete local-path)
              (update-download-status id url "COMPLETE")
-             :done)
+             {:status :success})
          (catch Exception e (do (delete local-path)
                                 (update-download-status id url "FAILED")
-                                :failed)))))
+                                {:status :error})))))
 
 (defn start-workers
   [n]
