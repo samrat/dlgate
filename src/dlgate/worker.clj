@@ -12,16 +12,19 @@
         id (:id (copy/account-info consumer access-token))
         local-path (format "/tmp/%s/%s" id file-name)]
     (insert-download id url "PENDING")
-    (mkdir (format "/tmp/%s" id))
-    (with-open [w (clojure.java.io/output-stream local-path)]
-      (.write w (:body (client/get url {:as :byte-array}))))
-    (copy/upload-file consumer
-                      access-token
-                      :path (str "/dlgate/" file-name)
-                      :local-path local-path)
-    (delete local-path)
-    (update-download-status id url "COMPLETE")
-    nil))
+    (try (do (mkdir (format "/tmp/%s" id))
+             (with-open [w (clojure.java.io/output-stream local-path)]
+               (.write w (:body (client/get url {:as :byte-array}))))
+             (copy/upload-file consumer
+                               access-token
+                               :path (str "/dlgate")
+                               :local-path local-path)
+             (delete local-path)
+             (update-download-status id url "COMPLETE")
+             :done)
+         (catch Exception e (do (delete local-path)
+                                (update-download-status id url "FAILED")
+                                :failed)))))
 
 (defn start-workers
   [n]
@@ -29,6 +32,6 @@
               #(mq/worker nil "dl-queue"
                           {:handler
                            (fn [{:keys [message attempt]}]
-                             (println message)
+                             ;;(println message)
                              (download-and-upload (:access-token message)
                                                   (:url message)))})))
