@@ -55,7 +55,7 @@
     (let [id (or (session-get :user-id)
                  (:id (copy/account-info consumer
                                          access-token)))]
-      (do (car/wcar redis-spec
+      (do (car/wcar {:spec redis-spec}
                     (mq/enqueue "dl-queue"
                                     {:url url
                                      :access-token access-token
