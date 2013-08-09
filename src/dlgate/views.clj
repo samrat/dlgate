@@ -15,7 +15,7 @@
 
 (def redis-spec
   {:host (env :redis-host)
-   :port (env :redis-port)
+   :port (read-string (env :redis-port))
    :password (env :redis-password)})
 
 (def consumer (auth/make-consumer consumer-key
@@ -23,7 +23,6 @@
 
 (defn index
   []
-  (println redis-spec)
   (if-let [access-token (session-get :access-token)]
     (let [account-info (copy/account-info consumer access-token)]
       (session-put! :user-id (:id account-info))
@@ -56,9 +55,7 @@
     (let [id (or (session-get :user-id)
                  (:id (copy/account-info consumer
                                          access-token)))]
-      (do (car/wcar {:spec {:host "pub-redis-19302.us-east-1-3.1.ec2.garantiadata.com"
-                            :port 19302
-                            :password (env :redis-password)}}
+      (do (car/wcar {:spec redis-spec}
                     (mq/enqueue "dl-queue"
                                     {:url url
                                      :access-token access-token
