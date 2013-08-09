@@ -15,9 +15,8 @@
                  [org.postgresql/postgresql "9.2-1003-jdbc4"]
                  [environ "0.4.0"]
                  [compojure "1.1.5"]]
-  :plugins [[lein-environ "0.4.0"]]
   :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]
-                   
+                   :plugins [[lein-environ "0.4.0"]]
                    :env { :callback-url "http://localhost:8080/auth"
 
                          :redis-host "127.0.0.1"
