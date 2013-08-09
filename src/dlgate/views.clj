@@ -18,8 +18,6 @@
    :port (env :redis-port)
    :password (env :redis-password)})
 
-(println redis-spec)
-
 (def consumer (auth/make-consumer consumer-key
                                   consumer-secret))
 
