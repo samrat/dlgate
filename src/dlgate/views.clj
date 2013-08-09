@@ -56,7 +56,9 @@
     (let [id (or (session-get :user-id)
                  (:id (copy/account-info consumer
                                          access-token)))]
-      (do (car/wcar {:spec redis-spec}
+      (do (car/wcar {:spec {:host "pub-redis-19302.us-east-1-3.1.ec2.garantiadata.com"
+                            :port 19302
+                            :password (env :redis-password)}}
                     (mq/enqueue "dl-queue"
                                     {:url url
                                      :access-token access-token
