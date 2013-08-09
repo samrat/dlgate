@@ -31,7 +31,7 @@
 (defn login
   []
   (let [request-token (auth/request-token consumer
-                                          "http://localhost:8080/auth")
+                                          (System/getenv "CALLBACK_URL"))
         redirect-url (auth/authorization-url consumer request-token)]
     (session-put! :request-token request-token)
     (ring/redirect redirect-url)))
