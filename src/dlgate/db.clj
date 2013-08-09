@@ -2,7 +2,7 @@
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.java.jdbc.sql :as sql]))
 
-(def db "postgres://localhost:5432/mydb")
+(def db (System/getenv "DATABASE_URL"))
 
 (defn schema
   []
@@ -37,3 +37,6 @@
               (sql/select * {:downloads :d}
                           (sql/where {:d.user_id user-id})
                           "ORDER BY created_at DESC")))
+
+(defn -main []
+  (schema))

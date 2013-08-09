@@ -39,10 +39,14 @@
 (defn start-workers
   [n]
   (repeatedly n
-              #(mq/worker nil "dl-queue"
-                          {:handler
-                           (fn [{:keys [message attempt]}]
-                             ;;(println message)
-                             (download-and-upload (:access-token message)
-                                                  (:url message)
-                                                  (:id message)))})))
+              #(mq/worker
+                {:spec {:host "pub-redis-19302.us-east-1-3.1.ec2.garantiadata.com"
+                        :port 19302
+                        :password (System/getenv "REDIS_PASSWORD")}}
+                "dl-queue"
+                {:handler
+                 (fn [{:keys [message attempt]}]
+                   ;;(println message)
+                   (download-and-upload (:access-token message)
+                                        (:url message)
+                                        (:id message)))})))
