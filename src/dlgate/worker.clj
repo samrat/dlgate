@@ -40,7 +40,7 @@
   [n]
   (repeatedly n
               #(mq/worker
-                {:spec redis-spec}
+                {:spec (redis-spec)}
                 "dl-queue"
                 {:handler
                  (fn [{:keys [message attempt]}]

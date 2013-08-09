@@ -13,7 +13,8 @@
 (def consumer-secret (env :copy-secret))
 (def callback-url (env :callback-url))
 
-(def redis-spec
+(defn redis-spec
+  []
   {:host (env :redis-host)
    :port (read-string (env :redis-port))
    :password (env :redis-password)})
@@ -55,7 +56,7 @@
     (let [id (or (session-get :user-id)
                  (:id (copy/account-info consumer
                                          access-token)))]
-      (do (car/wcar {:spec redis-spec}
+      (do (car/wcar {:spec (redis-spec)}
                     (mq/enqueue "dl-queue"
                                     {:url url
                                      :access-token access-token
