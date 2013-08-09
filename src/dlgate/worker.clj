@@ -3,6 +3,7 @@
             [copy-api.client :as copy]
             [me.raynes.fs :refer [delete mkdir]]
             [clj-http.client :as client]
+            [cemerick.url :as u]
             [dlgate.views :refer [consumer]]
             [dlgate.db :refer [insert-download update-download-status]]))
 
@@ -12,7 +13,8 @@
     (or (->> (get headers "content-disposition" "")
              (re-find #"filename=\"(\S+)\"")
              second)
-        (last (drop 3 (clojure.string/split url #"/")))
+        (last (clojure.string/split (:path (u/url url))
+                                    #"/"))
         "index.html")))
 
 (defn download-and-upload
@@ -21,7 +23,8 @@
         local-path (format "/tmp/%s/%s" id file-name)]
     (try (do (mkdir (format "/tmp/%s" id))
              (with-open [w (clojure.java.io/output-stream local-path)]
-               (.write w (:body (client/get url {:as :byte-array}))))
+               (.write w (:body (client/get url {:as :byte-array
+                                                 :follow-redirects? false}))))
              (copy/upload-file consumer
                                access-token
                                :path (str "/dlgate")
