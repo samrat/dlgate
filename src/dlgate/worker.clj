@@ -6,14 +6,18 @@
             [dlgate.views :refer [consumer]]
             [dlgate.db :refer [insert-download update-download-status]]))
 
+(defn filename
+  [url]
+  (let [headers (:headers (client/head url))]
+    (or (->> (get headers "content-disposition" "")
+             (re-find #"filename=\"(\S+)\"")
+             second)
+        (last (drop 3 (clojure.string/split url #"/")))
+        "index.html")))
+
 (defn download-and-upload
   [access-token url]
-  (let [headers (:headers (client/head url))
-        file-name (or (second
-                       (re-find #"filename=\"(\S+)\""
-                                (-> headers
-                                    (get "content-disposition" ""))))
-                      (last (clojure.string/split url #"/")))
+  (let [file-name (filename url)
         id (:id (copy/account-info consumer access-token))
         local-path (format "/tmp/%s/%s" id file-name)]
     (insert-download id url "PENDING")
