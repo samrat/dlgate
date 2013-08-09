@@ -23,6 +23,7 @@
 
 (defn index
   []
+  (println redis-spec)
   (if-let [access-token (session-get :access-token)]
     (let [account-info (copy/account-info consumer access-token)]
       (session-put! :user-id (:id account-info))
