@@ -5,7 +5,8 @@
             [ring.util.response :as ring]
             [sandbar.stateful-session :refer :all]
             [taoensso.carmine :as car :refer (wcar)]
-            [taoensso.carmine.message-queue :as mq])
+            [taoensso.carmine.message-queue :as mq]
+            [dlgate.db :refer (user-downloads insert-download)])
   (:load "copy_keys"))
 
 (def consumer (auth/make-consumer consumer-key
@@ -14,9 +15,12 @@
 (defn index
   []
   (if-let [access-token (session-get :access-token)]
-    (layout/logged-in
-     (copy/account-info consumer access-token)
-     :alert (flash-get :alert))
+    (let [account-info (copy/account-info consumer access-token)]
+      (session-put! :user-id (:id account-info))
+      (layout/logged-in
+       account-info
+       :alert (flash-get :alert)
+       :prev-downloads (take 10 (user-downloads (:id account-info)))))
     (layout/index :alert (flash-get :alert))))
 
 (defn login
@@ -39,10 +43,15 @@
 (defn queue
   [url]
   (if-let [access-token (session-get :access-token)]
-    (do (car/wcar nil (mq/enqueue "dl-queue"
-                                  {:url url
-                                   :access-token access-token}))
-        (flash-put! :alert "Your download has been queued.")
-        (ring/redirect "/"))
+    (let [id (or (session-get :user-id)
+                 (:id (copy/account-info consumer
+                                         access-token)))]
+      (do (car/wcar nil (mq/enqueue "dl-queue"
+                                    {:url url
+                                     :access-token access-token
+                                     :id id}))
+          (insert-download id url url "PENDING")
+          (flash-put! :alert "Your download has been queued.")
+          (ring/redirect "/")))
     (do (flash-put! :alert "You're not logged in!")
         (ring/redirect "/"))))

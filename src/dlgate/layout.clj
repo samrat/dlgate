@@ -47,8 +47,18 @@
                               (get-in account-info [:storage :used]))
                            (Math/pow 1024 3)))))
 
+(defn status-label
+  [status]
+  [:span {:class (str (condp = status
+                        "COMPLETE" "success"
+                        "PENDING" "default"
+                        "FAILED" "warning")
+                      " label")
+          :style "float:right;"}
+   status])
+
 (defn logged-in
-  [account-info & {:keys [alert]}]
+  [account-info & {:keys [alert prev-downloads]}]
   (common "dlgate"
           (html [:div {:class "twelve colgrid"}
                  (when-not (nil? alert)
@@ -77,4 +87,16 @@
                     ". "]
                    "You have "
                    (free-space account-info)
-                   " GB space left on your Copy folder."]]])))
+                   " GB space left on your Copy folder."
+                   [:br]
+                   (when prev-downloads
+                     [:div
+                      [:div {:class "row"}
+                       [:h4 "Your most recent downloads"]]
+                      (for [download prev-downloads]
+                        [:div {:class "row"}
+                         [:a {:href (:url download)}
+                          (:filename download)]
+                         (status-label (str (:status download)))
+                         [:hr]])])]]])))
+

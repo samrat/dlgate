@@ -10,22 +10,24 @@
     (try (jdbc/create-table "downloads"
                             [:user_id :varchar "(20)"]
                             [:url :varchar "NOT NULL"]
+                            [:filename :varchar "NOT NULL"]
                             [:status :varchar "(10)"]
                             [:created_at :timestamp "NOT NULL" "DEFAULT CURRENT_TIMESTAMP"])
          (catch Exception e e))))
 
 (defn insert-download
-  [user-id url status]
+  [user-id url filename status]
   (jdbc/insert! db
                 :downloads
                 nil
-                [user-id url status]))
+                [user-id url filename status]))
 
 (defn update-download-status
-  [user-id url status]
+  [user-id url filename status]
   (jdbc/update! db
                 :downloads
-                {:status status}
+                {:status status
+                 :filename filename}
                 (sql/where {:user_id user-id
                             :url url})))
 
@@ -33,4 +35,5 @@
   [user-id]
   (jdbc/query db
               (sql/select * {:downloads :d}
-                          (sql/where {:d.user_id user-id}))))
+                          (sql/where {:d.user_id user-id})
+                          "ORDER BY created_at DESC")))

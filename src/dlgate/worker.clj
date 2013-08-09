@@ -16,11 +16,9 @@
         "index.html")))
 
 (defn download-and-upload
-  [access-token url]
+  [access-token url id]
   (let [file-name (filename url)
-        id (:id (copy/account-info consumer access-token))
         local-path (format "/tmp/%s/%s" id file-name)]
-    (insert-download id url "PENDING")
     (try (do (mkdir (format "/tmp/%s" id))
              (with-open [w (clojure.java.io/output-stream local-path)]
                (.write w (:body (client/get url {:as :byte-array}))))
@@ -29,7 +27,7 @@
                                :path (str "/dlgate")
                                :local-path local-path)
              (delete local-path)
-             (update-download-status id url "COMPLETE")
+             (update-download-status id url file-name "COMPLETE")
              {:status :success})
          (catch Exception e (do (delete local-path)
                                 (update-download-status id url "FAILED")
@@ -43,4 +41,5 @@
                            (fn [{:keys [message attempt]}]
                              ;;(println message)
                              (download-and-upload (:access-token message)
-                                                  (:url message)))})))
+                                                  (:url message)
+                                                  (:id message)))})))
