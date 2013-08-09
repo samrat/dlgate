@@ -4,7 +4,7 @@
             [me.raynes.fs :refer [delete mkdir]]
             [clj-http.client :as client]
             [cemerick.url :as u]
-            [dlgate.views :refer [consumer]]
+            [dlgate.views :refer [consumer redis-spec]]
             [dlgate.db :refer [insert-download update-download-status]]))
 
 (defn filename
@@ -40,9 +40,7 @@
   [n]
   (repeatedly n
               #(mq/worker
-                {:spec {:host "pub-redis-19302.us-east-1-3.1.ec2.garantiadata.com"
-                        :port 19302
-                        :password (System/getenv "REDIS_PASSWORD")}}
+                {:spec redis-spec}
                 "dl-queue"
                 {:handler
                  (fn [{:keys [message attempt]}]

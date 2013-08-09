@@ -1,8 +1,9 @@
 (ns dlgate.db
   (:require [clojure.java.jdbc :as jdbc]
-            [clojure.java.jdbc.sql :as sql]))
+            [clojure.java.jdbc.sql :as sql])
+  (:use environ.core))
 
-(def db (System/getenv "DATABASE_URL"))
+(def db (env :database-url))
 
 (defn schema
   []

@@ -7,12 +7,16 @@
             [taoensso.carmine :as car :refer (wcar)]
             [taoensso.carmine.message-queue :as mq]
             [dlgate.db :refer (user-downloads insert-download)])
-  ;;(:load "copy_keys")
-  ;;(:load "redis_spec")
-  )
+  (:use environ.core))
 
-(def consumer-key (System/getenv "COPY_KEY"))
-(def consumer-secret (System/getenv "COPY_SECRET"))
+(def consumer-key (env :copy-key))
+(def consumer-secret (env :copy-secret))
+(def callback-url (env :callback-url))
+
+(def redis-spec
+  {:host (env :redis-host)
+   :port (env :redis-port)
+   :password (env :redis-password)})
 
 (def consumer (auth/make-consumer consumer-key
                                   consumer-secret))
@@ -31,7 +35,7 @@
 (defn login
   []
   (let [request-token (auth/request-token consumer
-                                          (System/getenv "CALLBACK_URL"))
+                                          callback-url)
         redirect-url (auth/authorization-url consumer request-token)]
     (session-put! :request-token request-token)
     (ring/redirect redirect-url)))
@@ -51,9 +55,7 @@
     (let [id (or (session-get :user-id)
                  (:id (copy/account-info consumer
                                          access-token)))]
-      (do (car/wcar {:spec {:host "pub-redis-19302.us-east-1-3.1.ec2.garantiadata.com"
-                            :port 19302
-                            :password (System/getenv "REDIS_PASSWORD")}}
+      (do (car/wcar redis-spec
                     (mq/enqueue "dl-queue"
                                     {:url url
                                      :access-token access-token

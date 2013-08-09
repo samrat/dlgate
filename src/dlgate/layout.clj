@@ -89,7 +89,7 @@
                    (free-space account-info)
                    " GB space left on your Copy folder."
                    [:br]
-                   (when prev-downloads
+                   (when-not (nil? prev-downloads)
                      [:div
                       [:div {:class "row"}
                        [:h4 "Your most recent downloads"]]

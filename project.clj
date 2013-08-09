@@ -13,7 +13,17 @@
                  [com.cemerick/url "0.1.0"]
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [org.postgresql/postgresql "9.2-1003-jdbc4"]
+                 [environ "0.4.0"]
                  [compojure "1.1.5"]]
-  :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]}}
+  :plugins [[lein-environ "0.4.0"]]
+  :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]
+                   
+                   :env { :callback-url "http://localhost:8080/auth"
+
+                         :redis-host "127.0.0.1"
+                         :redis-port 6379
+                         :redis-password nil
+
+                         :database-url "postgresql://localhost:5432/mydb"}}}
   :min-lein-version "2.0.0"
   :main dlgate.web)
