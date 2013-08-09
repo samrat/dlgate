@@ -7,8 +7,12 @@
             [taoensso.carmine :as car :refer (wcar)]
             [taoensso.carmine.message-queue :as mq]
             [dlgate.db :refer (user-downloads insert-download)])
-  (:load "copy_keys")
-  (:load "redis_spec"))
+  ;;(:load "copy_keys")
+  ;;(:load "redis_spec")
+  )
+
+(def consumer-key (System/getenv "COPY_KEY"))
+(def consumer-secret (System/getenv "COPY_SECRET"))
 
 (def consumer (auth/make-consumer consumer-key
                                   consumer-secret))
