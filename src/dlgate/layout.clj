@@ -93,7 +93,7 @@
                   [:div {:class "three columns"}]
                   [:div {:class "six columns"}
                    "dlgate lets you send files from the web to your Copy.com folder by
-  simply pasting a URL. To get started,"
+  simply pasting a URL. To get started, "
                    [:a {:href "/login"} "login "]
                    " or "
                    [:a {:href "https://copy.com?r=cPK0qZ"} " join Copy.com"]
@@ -114,6 +114,11 @@
                       " label")
           :style "float:right;"}
    status])
+
+(def ga-logged-in
+  "<script type=”text/javascript”>
+_gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
+</script>")
 
 (defn logged-in
   [account-info & {:keys [alert prev-downloads]}]
@@ -170,5 +175,6 @@
                                                 (- len 12) len))
                                      (:filename download)))]]
                            [:td
-                            (status-label (str (:status download)))]])]]])]]])))
+                            (status-label (str (:status download)))]])]]])]]
+                 ga-logged-in])))
 
