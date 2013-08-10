@@ -26,5 +26,5 @@
 (defn -main [& args]
   (let [port (Integer/parseInt 
               (or (System/getenv "PORT") "8080"))]
-    (doall (start-workers 3))
+    (doall (start-workers 4))
     (run-server app {:port port :join? false})))
