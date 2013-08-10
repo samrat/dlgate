@@ -96,7 +96,14 @@
                       (for [download prev-downloads]
                         [:div {:class "row"}
                          [:a {:href (:url download)}
-                          (:filename download)]
+                          (let [filename (:filename download)
+                                len (count (:filename download))]
+                            (if (> len 25)
+                              (str (subs filename 0 10)
+                                   "..."
+                                   (subs filename
+                                         (- len 12) len))
+                              (:filename download)))]
                          (status-label (str (:status download)))
                          [:hr]])])]]])))
 
