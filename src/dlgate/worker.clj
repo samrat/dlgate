@@ -33,7 +33,7 @@
              (update-download-status id url file-name "COMPLETE")
              {:status :success})
          (catch Exception e (do (delete local-path)
-                                (update-download-status id url filename "FAILED")
+                                (update-download-status id url file-name "FAILED")
                                 {:status :error})))))
 
 (defn start-workers
