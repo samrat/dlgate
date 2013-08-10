@@ -47,8 +47,7 @@
     [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge,chrome=1"}]
     [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1"}]
     [:title title]
-    (include-css "/Gumby/css/gumby.css")
-    (include-css "/css/layout.css")]
+    (include-css "/Gumby/css/gumby.css")]
    [:body
     fb-javascript-sdk
     [:header {:class "row"}
