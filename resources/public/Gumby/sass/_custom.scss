@@ -1,5 +1,18 @@
 // Your custom SCSS should be written here...
+
 header {
-       text-align: center;
+    text-align: center;
+    padding-bottom: 20px;
 }
 
+footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.social {
+    text-align: center;
+    > table {
+        border: none;
+    }
+}
