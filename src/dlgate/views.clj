@@ -30,7 +30,7 @@
       (layout/logged-in
        account-info
        :alert (flash-get :alert)
-       :prev-downloads (take 10 (user-downloads (:id account-info)))))
+       :prev-downloads (user-downloads (:id account-info))))
     (layout/index :alert (flash-get :alert))))
 
 (defn login

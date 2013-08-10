@@ -37,7 +37,7 @@
   (jdbc/query db
               (sql/select * {:downloads :d}
                           (sql/where {:d.user_id user-id})
-                          "ORDER BY created_at DESC")))
+                          "ORDER BY created_at DESC LIMIT 10")))
 
 (defn -main []
   (schema))
