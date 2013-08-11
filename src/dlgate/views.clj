@@ -6,7 +6,7 @@
             [sandbar.stateful-session :refer :all]
             [taoensso.carmine :as car :refer (wcar)]
             [taoensso.carmine.message-queue :as mq]
-            [dlgate.db :refer (user-downloads insert-download)])
+            [dlgate.db :refer (user-downloads insert-download pop-download)])
   (:use environ.core))
 
 (def consumer-key (env :copy-key))
@@ -62,6 +62,7 @@
                                      :access-token access-token
                                      :id id}))
           (insert-download id url url "PENDING")
+          (future (pop-download id))
           (flash-put! :alert "Your download has been queued.")
           (ring/redirect "/")))
     (do (flash-put! :alert "You're not logged in!")
