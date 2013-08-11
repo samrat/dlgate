@@ -27,6 +27,19 @@
 (def fb-button
   "<div class='fb-like' data-href='http://dlgate.samrat.me' data-width='100' data-layout='button_count' data-show-faces='false' data-send='false'></div>")
 
+(def gplus-button
+  "<!-- Place this tag where you want the +1 button to render. -->
+<div class='g-plusone' data-size='medium'></div>
+
+<!-- Place this tag after the last +1 button tag. -->
+<script type='text/javascript'>
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>")
+
 (def google-analytics
   "<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -60,6 +73,7 @@
       [:table {:class "six columns"}
        [:tr [:td fb-button]
         [:td tweet-button]
+        [:td gplus-button]
         [:td flattr]]]]]
     body
     
