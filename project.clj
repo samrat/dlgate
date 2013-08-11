@@ -6,7 +6,7 @@
                  [hiccup "1.0.3"]
                  [ring/ring-devel "1.1.8"]
                  [com.taoensso/carmine "2.1.2"]
-                 [copy-api "0.1.1-SNAPSHOT"]
+                 [copy-api "0.1.2-SNAPSHOT"]
                  [sandbar/sandbar "0.4.0-SNAPSHOT"]
                  [clj-http "0.7.6"]
                  [me.raynes/fs "1.4.5"]
