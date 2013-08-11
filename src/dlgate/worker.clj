@@ -5,7 +5,8 @@
             [clj-http.client :as client]
             [cemerick.url :as u]
             [dlgate.views :refer [consumer redis-spec]]
-            [dlgate.db :refer [insert-download update-download-status]]))
+            [dlgate.db :refer [insert-download update-download-status]]
+            [me.raynes.conch :refer [let-programs]]))
 
 (defn filename
   [url]
@@ -22,9 +23,8 @@
   (let [file-name (filename url)
         local-path (format "/tmp/%s/%s" id file-name)]
     (try (do (mkdir (format "/tmp/%s" id))
-             (with-open [w (clojure.java.io/output-stream local-path)]
-               (.write w (:body (client/get url {:as :byte-array
-                                                 :follow-redirects? false}))))
+             (let-programs [curl "/usr/bin/curl"]
+               (curl "-o" local-path url))
              (copy/upload-file consumer
                                access-token
                                :path (str "/dlgate")

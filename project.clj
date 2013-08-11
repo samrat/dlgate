@@ -14,6 +14,7 @@
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [org.postgresql/postgresql "9.2-1003-jdbc4"]
                  [environ "0.4.0"]
+                 [me.raynes/conch "0.5.0"]
                  [compojure "1.1.5"]]
   :plugins [[lein-environ "0.4.0"]]
   :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]
