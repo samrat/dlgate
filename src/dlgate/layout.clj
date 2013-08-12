@@ -60,7 +60,8 @@
     [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge,chrome=1"}]
     [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1"}]
     [:title title]
-    (include-css "/Gumby/css/gumby.css")]
+    (include-css "/Gumby/css/gumby.css")
+    (include-js "http://cdn.filesizejs.com/filesize.min.js")]
    [:body
     fb-javascript-sdk
     [:header {:class "row"}
@@ -133,6 +134,15 @@
 _gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
 </script>")
 
+(defn readable-size
+  [bytes]
+  (let [bytes (Integer/parseInt bytes)]
+    (cond
+     (< bytes (* 1024 1024)) (format " (%.2f KB)" (/ bytes 1024.))
+     :else (format " (%.2f MB)"
+                   (/ bytes
+                      (* 1024.0 1024))))))
+
 (defn logged-in
   [account-info & {:keys [alert prev-downloads]}]
   (common "dlgate- Transfer files from the web to your Copy.com folder"
@@ -186,8 +196,13 @@ _gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
                                           "..."
                                           (subs filename
                                                 (- len 12) len))
-                                     (:filename download)))]]
+                                     (:filename download)))]
+                            (if (= "NA" (:size_bytes download))
+                              " (NA)"
+                              (readable-size (:size_bytes download)))]
                            [:td
                             (status-label (str (:status download)))]])]]])]]
                  ga-logged-in])))
+
+
 

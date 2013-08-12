@@ -6,6 +6,7 @@
             [cemerick.url :as u]
             [dlgate.views :refer [consumer redis-spec]]
             [dlgate.db :refer [insert-download update-download-status]]
+            [me.raynes.fs :as fs]
             [me.raynes.conch :refer [let-programs]]))
 
 (defn filename
@@ -24,16 +25,27 @@
         local-path (format "/tmp/%s/%s" id file-name)]
     (try (do (mkdir (format "/tmp/%s" id))
              (let-programs [curl "/usr/bin/curl"]
+                           ;; using curl avoids loading the whole
+                           ;; file into memory before saving it.
                (curl "-o" local-path url))
              (copy/upload-file consumer
                                access-token
                                :path (str "/dlgate")
                                :local-path local-path)
+             (update-download-status id
+                                     url
+                                     file-name
+                                     (fs/size local-path)
+                                     "COMPLETE")
              (delete local-path)
-             (update-download-status id url file-name "COMPLETE")
              {:status :success})
          (catch Exception e (do (delete local-path)
-                                (update-download-status id url file-name "FAILED")
+                                (update-download-status
+                                 id
+                                 url
+                                 file-name
+                                 "NA"
+                                 "FAILED")
                                 {:status :error})))))
 
 (defn start-workers
