@@ -170,7 +170,7 @@ _gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
                  [:div {:class "row"}
                   [:div {:class "three columns"}]
                   [:div {:class "six columns"}
-                   (when-not (nil? prev-downloads)
+                   (when-not (empty? prev-downloads)
                      [:div
                       [:div {:class "row"}
                        [:h4 "Your most recent downloads"]]
