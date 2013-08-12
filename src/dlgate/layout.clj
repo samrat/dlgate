@@ -197,7 +197,8 @@ _gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
                                           (subs filename
                                                 (- len 12) len))
                                      (:filename download)))]
-                            (if (= "NA" (:size_bytes download))
+                            (if (or (= "NA" (:size_bytes download))
+                                    (nil? (:size_bytes download)))
                               " (NA)"
                               (readable-size (:size_bytes download)))]
                            [:td
