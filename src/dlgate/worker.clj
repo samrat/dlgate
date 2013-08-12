@@ -27,7 +27,10 @@
              (let-programs [curl "/usr/bin/curl"]
                            ;; using curl avoids loading the whole
                            ;; file into memory before saving it.
-               (curl "-o" local-path url))
+                           (curl "-o" local-path url))
+             (when (> (fs/size local-path)
+                      (* 180 1024 1024))
+               (throw (Exception. "File too large")))
              (copy/upload-file consumer
                                access-token
                                :path (str "/dlgate")
