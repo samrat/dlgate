@@ -7,6 +7,7 @@
             [taoensso.carmine :as car :refer (wcar)]
             [taoensso.carmine.message-queue :as mq]
             [me.raynes.fs :as fs]
+            [clj-http.client :as client]
             [dlgate.db :refer (user-downloads insert-download pop-download)])
   (:use environ.core))
 
@@ -51,18 +52,38 @@
                                               oauth-verifier))
     (ring/redirect "/")))
 
+(defn size
+  [url]
+  (let [headers (:headers (client/head url))]
+    (read-string (get headers "content-length" "-1"))))
+
 (defn queue
   [url]
   (if-let [access-token (session-get :access-token)]
     (let [id (or (session-get :user-id)
                  (:id (copy/account-info consumer
-                                         access-token)))]
-      (do (car/wcar {:spec (redis-spec)}
-                    (mq/enqueue "dl-queue"
-                                    {:url url
-                                     :access-token access-token
-                                     :id id}))
-          (insert-download id url url "NA" "PENDING")
+                                         access-token)))
+          filesize (future (size url))
+          message {:url url
+                   :access-token access-token
+                   :id id}
+          add-to-queue (fn [queue]
+                         (do (car/wcar {:spec (redis-spec)}
+                                       (mq/enqueue queue
+                                                   message))
+                             (insert-download id
+                                              url
+                                              url
+                                              "NA"
+                                              "PENDING")))]
+      (do (future
+            (cond (= @filesize -1)
+                  (add-to-queue "large-files-queue")
+                  (< @filesize (* 50 1024 1024))
+                  (add-to-queue "small-files-queue")
+                  (< @filesize (* 180 1024 1024))
+                  (add-to-queue "large-files-queue")
+                  :else (insert-download id url url "NA" "FAILED")))
           (future (pop-download id))
           (flash-put! :alert "Your download has been queued.")
           (ring/redirect "/")))

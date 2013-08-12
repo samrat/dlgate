@@ -49,14 +49,14 @@
                                 {:status :error})))))
 
 (defn start-workers
-  [n]
+  [queue n]
   (repeatedly n
               #(mq/worker
                 {:spec (redis-spec)}
-                "dl-queue"
+                queue
                 {:handler
                  (fn [{:keys [message attempt]}]
-                   ;;(println message)
+                   ;;(println message " received on queue " queue)
                    (download-and-upload (:access-token message)
                                         (:url message)
                                         (:id message)))})))
