@@ -12,16 +12,17 @@
                             [:user_id :varchar "(20)"]
                             [:url :varchar "NOT NULL"]
                             [:filename :varchar "NOT NULL"]
+                            [:size_bytes :varchar "(20)"]
                             [:status :varchar "(10)"]
                             [:created_at :timestamp "NOT NULL" "DEFAULT CURRENT_TIMESTAMP"])
          (catch Exception e e))))
 
 (defn insert-download
-  [user-id url filename status]
+  [user-id url filename size-bytes status]
   (jdbc/insert! db
                 :downloads
-                nil
-                [user-id url filename status]))
+                [:user_id :url :filename :size_bytes :status]
+                [user-id   url  filename  size-bytes  status]))
 
 (defn user-records-count
   [user_id]
@@ -39,11 +40,12 @@
       user_id])))
 
 (defn update-download-status
-  [user-id url filename status]
+  [user-id url filename size-bytes status]
   (jdbc/update! db
                 :downloads
                 {:status status
-                 :filename filename}
+                 :filename filename
+                 :size_bytes size-bytes}
                 (sql/where {:user_id user-id
                             :url url})))
 
