@@ -9,6 +9,7 @@
   []
   (jdbc/with-connection db
     (try (jdbc/create-table "downloads"
+                            [:id :serial "PRIMARY KEY"]
                             [:user_id :varchar "(20)"]
                             [:url :varchar "NOT NULL"]
                             [:filename :varchar "NOT NULL"]
