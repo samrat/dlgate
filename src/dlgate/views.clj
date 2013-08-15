@@ -31,9 +31,10 @@
       (session-put! :user-id (:id account-info))
       (layout/logged-in
        account-info
-       :url (flash-get :url)
+       :url (session-get :url)
        :alert (flash-get :alert)
-       :prev-downloads (user-downloads (:id account-info))))
+       :prev-downloads (user-downloads (:id account-info)))
+      (session-put! :url nil))
     (layout/index :alert (flash-get :alert))))
 
 (defn login
