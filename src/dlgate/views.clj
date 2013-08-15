@@ -11,6 +11,8 @@
             [dlgate.db :refer (user-downloads insert-download pop-download)])
   (:use environ.core))
 
+(declare queue)
+
 (def consumer-key (env :copy-key))
 (def consumer-secret (env :copy-secret))
 (def callback-url (env :callback-url))
@@ -31,10 +33,8 @@
       (session-put! :user-id (:id account-info))
       (layout/logged-in
        account-info
-       :url (session-get :url)
        :alert (flash-get :alert)
-       :prev-downloads (user-downloads (:id account-info)))
-      (session-put! :url nil))
+       :prev-downloads (user-downloads (:id account-info))))
     (layout/index :alert (flash-get :alert))))
 
 (defn login
@@ -52,6 +52,9 @@
                   (auth/access-token-response consumer
                                               request-token
                                               oauth-verifier))
+    (when (session-get :url)
+      (do (queue (session-get :url))
+          (session-delete-key! :url)))
     (ring/redirect "/")))
 
 (defn size

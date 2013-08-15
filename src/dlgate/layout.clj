@@ -156,7 +156,7 @@ _gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
                       (* 1024.0 1024))))))
 
 (defn logged-in
-  [account-info & {:keys [alert prev-downloads url]}]
+  [account-info & {:keys [alert prev-downloads]}]
   (common "dlgate- Transfer files from the web to your Copy.com folder"
           (html [:div {:class "twelve colgrid"}
                  (when-not (nil? alert)
@@ -182,7 +182,6 @@ _gaq.push([‘_setCustomVar’, 1, ‘status’, ‘logged_in’, 2]);
                           :class "append field six columns"}
                    [:input {:type "url"
                             :name "url"
-                            :value url
                             :class "xwide url input"
                             :placeholder "Paste URL here"}]
                    [:button {:type "submit"
