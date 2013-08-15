@@ -60,8 +60,7 @@
     [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge,chrome=1"}]
     [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1"}]
     [:title title]
-    (include-css "/Gumby/css/gumby.css")
-    (include-js "http://cdn.filesizejs.com/filesize.min.js")]
+    (include-css "/Gumby/css/gumby.css")]
    [:body
     fb-javascript-sdk
     [:header {:class "row"}
