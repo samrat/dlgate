@@ -31,6 +31,7 @@
       (session-put! :user-id (:id account-info))
       (layout/logged-in
        account-info
+       :url (session-get :url)
        :alert (flash-get :alert)
        :prev-downloads (user-downloads (:id account-info))))
     (layout/index :alert (flash-get :alert))))

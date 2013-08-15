@@ -5,12 +5,15 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.middleware.reload :as reload]
+            [ring.util.response :as ring]
             [dlgate.worker :refer [start-workers]]
             [dlgate.views :as views]))
 
 (defroutes app-routes
   (GET "/" [] (views/index))
   (GET "/login" [] (views/login))
+  (POST "/save-url" [url] (do (session-put! :url url)
+                           (ring/redirect "/login")))
   (GET "/auth" [oauth_token oauth_verifier] (views/auth oauth_token
                                                         oauth_verifier))
   (POST "/q" [url] (views/queue url))
