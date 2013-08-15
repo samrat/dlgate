@@ -12,8 +12,8 @@
 (defroutes app-routes
   (GET "/" [] (views/index))
   (GET "/login" [] (views/login))
-  (POST "/save-url" [url] (do (session-put! :url url)
-                           (ring/redirect "/login")))
+  (POST "/save-url" [url] (do (flash-put! :url url)
+                              (ring/redirect "/login")))
   (GET "/auth" [oauth_token oauth_verifier] (views/auth oauth_token
                                                         oauth_verifier))
   (POST "/q" [url] (views/queue url))
