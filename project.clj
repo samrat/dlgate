@@ -19,11 +19,11 @@
   :plugins [[lein-environ "0.4.0"]]
   :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]
                    :env {:callback-url "http://localhost:8080/auth"
-
+                         
                          :redis-host "127.0.0.1"
                          :redis-port "6379"
                          :redis-password nil
 
-                         :database-url "postgresql://localhost:5432/mydb"}}}
+                         :database-url "postgresql://localhost:5432/dlgate"}}}
   :min-lein-version "2.0.0"
   :main dlgate.web)
